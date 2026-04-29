@@ -18,7 +18,7 @@ ConstByteA  EQU 0xaffe
     AREA DATA, DATA, align=2    
 VariableA   DCW 0xbeef
 VariableB   DCW 0x1234
-VariableC   DCW 0x0000
+VariableC   DCW 0xaffe
 
 ;* We need minimal memory setup of InRootSection placed in Code Section 
     AREA  |.text|, CODE, READONLY, ALIGN = 3    
@@ -39,10 +39,18 @@ main
 
 ;* Eigene Erweiterung für VariableC
     ldr     R0, =VariableC  ; Lade die Adresse der neuen VariableC in R0
-    mov     R2, #0xAF       ; Lade das "hochwertige" Byte AF in R2
-    strb    R2, [R0]        ; Speichere AF an die erste Adresse (links)
-    mov     R3, #0xFE       ; Lade das "niederwertige" Byte FE in R3
-    strb    R3, [R0, #1]    ; Speichere FE an die Adresse + 1 (rechts daneben)    
+    ldrb    R2, [R0]        ; Lade das "niederwertige" Byte 0xFE in R2
+    ldrb    R3, [R0, #1]    ; Lade das "hochwertige" Byte 0xAF in R3
+    lsl     R2, #8          ; Schiebe 0xAF acht Stellen nach links -> 0xAF00
+    orr     R2, R3          ; Verknüpfe es mit 0xFE -> R2 enthält jetzt 0xAFFE
+    strh    R2, [R0]        ; Speichere das Ergebnis zurück an die Adresse von VariableC
+
+;* Andere Version für VariableC     
+    ;ldr     R0, =VariableC  ; Lade die Adresse der neuen VariableC in R0
+    ;mov     R2, #0xAF       ; Lade das "hochwertige" Byte 0xAF in R2
+    ;strb    R2, [R0]        ; Speichere AF an die erste Adresse (links)
+    ;mov     R3, #0xFE       ; Lade das "niederwertige" Byte 0xFE in R3
+    ;strb    R3, [R0, #1]    ; Speichere 0xFE an die Adresse + 1 (rechts daneben)    
 
 ;* Change value from x1234 to x4321
     ldr     R1,=VariableB   ; Anw09
@@ -50,9 +58,7 @@ main
     ;mov     R7, #0x30ED     ; Anw0B
     ;add     R6, R6, R7      ; Anw0C
 
-    lsl     R2, R6, #8      ; Schiebt 0x34 in den oberen Teil -> R2 = 0x3400 [4]
-    lsr     R3, R6, #8      ; Schiebt 0x12 in den unteren Teil -> R3 = 0x0012 [4]
-    orr     R6, R2, R3      ; Kombiniert beide Teile -> R6 = 0x3412 [5]
+    mov     R6, #0x3412      ; Laden den Wert direkt "verdreht"
 
     strh    R6,[R1]         ; Anw0D
     b .                     ; Anw0E
