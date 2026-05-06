@@ -58,7 +58,7 @@ main
     ;mov     R7, #0x30ED     ; Anw0B
     ;add     R6, R6, R7      ; Anw0C
 
-    mov     R6, #0x3412      ; Laden den Wert direkt "verdreht"
+    mov     R6, #0x3412     ; Laden den Wert direkt "verdreht"
 
     strh    R6,[R1]         ; Anw0D
     b .                     ; Anw0E
