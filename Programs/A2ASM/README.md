@@ -9,4 +9,4 @@
     •Ausgangszustand: Speicher zeigt ef be 34 12 ...
     •Anw01-03: R0 erhält die Basisadresse; R2 und R3 laden die Einzelbytes 0xEF und 0xBE.
     •Anw04-05: R2 wird durch Bit-Verschiebung (LSL) und ODER-Verknüpfung (ORR) zu 0xEFBE kombiniert
-    •Anw06: Erst der strh-Befehl schreibt den Wert zurück. Der Speicher an 0x2000000C wechselt zu be ef – die Bytes wurden effektiv vertauscht.
+    •Anw06: Erst der strh-Befehl schreibt den Wert zurück. Der Speicher an 0x2000000C wechselt zu be ef die Bytes wurden effektiv vertauscht.
